@@ -1,5 +1,5 @@
 name: Docker Image CI
-# 触发条件：当master branch触发push（push，merge Pull Request）时，弱docker文件夹下的文件有更新，则触发。
+# 触发条件：当master branch触发push（push，merge Pull Request）时
 on:
   push:
     branches:
