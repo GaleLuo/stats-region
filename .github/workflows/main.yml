@@ -1,0 +1,41 @@
+name: Docker Image CI
+# 触发条件：当master branch触发push（push，merge Pull Request）时，弱docker文件夹下的文件有更新，则触发。
+on:
+  push:
+    branches:
+      - master
+
+defaults:
+  run:
+    shell: bash
+    working-directory: './docker'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Dockerfile
+        uses: actions/checkout@v2
+      # 使用Docker官方制作的action
+      # https://github.com/marketplace/actions/build-and-push-docker-images
+      - name: Build and Push Docker Iamge
+        uses: docker/build-push-action@v1
+        with: 
+          registry: ${{ secrets.ALI_DOCKER_HUB_REGISTRY }}
+          username: ${{ secrets.ALI_DOCKER_HUB_USN }}
+          password: ${{ secrets.ALI_DOCKER_HUB_PWD }}
+          repository: username/repository
+          tag_with_sha: true
+          path: 'docker'
+
+      # 使用Aliyun操作指南提供的命令
+      # - name: Build Docker image
+      #   run: |
+      #     docker build -t locale:tag .
+          
+      # - name: Push to Ali Docker Repository
+      #   run: |
+      #     docker login -u ${{ secrets.ALI_DOCKER_HUB_USN }} -p ${{ secrets.ALI_DOCKER_HUB_PWD }} ${{ secrets.ALI_DOCKER_HUB_REGISTRY }}
+      #     docker tag locale ${{ secrets.ALI_DOCKER_HUB_REGISTRY }}/username/repository:tag
+      #     docker push ${{ secrets.ALI_DOCKER_HUB_REGISTRY }}/username/repository:tag
